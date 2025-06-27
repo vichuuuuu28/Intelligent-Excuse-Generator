@@ -109,6 +109,9 @@ def excuse_history():
     history = cursor.fetchall()
     conn.close()
     return jsonify(history)
+@app.route('/')
+def home():
+    return "Your AI Excuse Generator backend is running successfully!"
 
 if __name__ == '__main__':
     init_db()  # Initialize the database when the app starts
