@@ -1,0 +1,927 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>AI Excuse Generator</title> <script src="https://cdn.tailwindcss.com"></script> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> <style> /* Custom Styles */ body { background: linear-gradient(135deg, #1e0033 0%, #5800a3 100%); color: #f0e6ff; min-height: 100vh; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .glass-card {
+        background: rgba(94, 53, 177, 0.15);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(178, 142, 255, 0.2);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    }
+
+    .glow-effect {
+        box-shadow: 0 0 15px rgba(178, 142, 255, 0.6);
+    }
+
+    .btn-purple {
+        background: linear-gradient(135deg, #7e3af2 0%, #5b21b6 100%);
+        transition: all 0.3s ease;
+    }
+
+    .btn-purple:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(126, 58, 242, 0.4);
+    }
+
+    .pulse-animation {
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(178, 142, 255, 0.7); }
+        70% { box-shadow: 0 0 0 10px rgba(178, 142, 255, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(178, 142, 255, 0); }
+    }
+
+    .floating {
+        animation: floating 6s ease-in-out infinite;
+    }
+
+    @keyframes floating {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-15px); }
+        100% { transform: translateY(0px); }
+    }
+
+    .text-gradient {
+        background: linear-gradient(90deg, #d8b4fe 0%, #e9d5ff 100%);
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .excuse-card {
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .excuse-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(126, 58, 242, 0.3);
+    }
+
+    .excuse-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: 0.5s;
+    }
+
+    .excuse-card:hover::before {
+        left: 100%;
+    }
+
+    .star-btn.active {
+        color: #f9cb28;
+        animation: heartBeat 0.5s;
+    }
+
+    @keyframes heartBeat {
+        0% { transform: scale(1); }
+        25% { transform: scale(1.3); }
+        50% { transform: scale(1); }
+        75% { transform: scale(1.3); }
+        100% { transform: scale(1); }
+    }
+
+    .scenario-btn.active {
+        background: rgba(178, 142, 255, 0.3);
+        border-color: #a78bfa;
+    }
+
+    .radio-tile {
+        transition: all 0.2s ease;
+    }
+
+    .radio-tile:hover {
+        transform: translateY(-3px);
+    }
+
+    input[type="radio"]:checked + .radio-tile {
+        background: rgba(178, 142, 255, 0.3);
+        border-color: #a78bfa;
+        box-shadow: 0 5px 15px rgba(126, 58, 242, 0.2);
+    }
+
+    .scrollbar-custom::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    .scrollbar-custom::-webkit-scrollbar-track {
+        background: rgba(178, 142, 255, 0.1);
+        border-radius: 10px;
+    }
+
+    .scrollbar-custom::-webkit-scrollbar-thumb {
+        background: rgba(178, 142, 255, 0.3);
+        border-radius: 10px;
+    }
+
+    .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+        background: rgba(178, 142, 255, 0.5);
+    }
+
+    .checkbox-effect:checked {
+        background-color: #7e3af2 !important;
+    }
+</style>
+</head> <body class="bg-gradient-to-br from-indigo-950 to-violet-950"> <!-- Floating Particles Background --> <div class="fixed inset-0 overflow-hidden -z-10 pointer-events-none"> <div class="absolute top-20 left-1/4 w-4 h-4 rounded-full bg-violet-700 opacity-40 floating" style="animation-delay: 0s;"></div> <div class="absolute top-1/3 left-3/4 w-3 h-3 rounded-full bg-purple-600 opacity-30 floating" style="animation-delay: 1s;"></div> <div class="absolute top-2/3 left-1/5 w-5 h-5 rounded-full bg-indigo-500 opacity-20 floating" style="animation-delay: 2s;"></div> <div class="absolute bottom-20 right-1/4 w-2 h-2 rounded-full bg-purple-400 opacity-40 floating" style="animation-delay: 0.5s;"></div> </div>
+<div class="container mx-auto px-4 py-8 relative">
+    <!-- Header Section with Animated Title -->
+    <header class="text-center mb-12">
+        <div class="relative inline-block mb-6">
+            <div class="absolute -inset-4 bg-violet-700/20 blur-3xl rounded-full"></div>
+            <div class="relative">
+                <h1 class="text-5xl font-bold mb-2 text-gradient bg-clip-text">Intelligent Excuse Generator</h1>
+                <div class="w-32 h-1 bg-gradient-to-r from-violet-500 to-fuchsia-500 mx-auto mt-4 rounded-full shadow-lg"></div>
+                <p class="text-violet-300 mt-4 animate-pulse">
+                    <i class="fas fa-wand-magic-sparkles mr-2 text-violet-400"></i>
+                    AI-powered, believability-optimized excuses
+                </p>
+            </div>
+        </div>
+    </header>
+     <div class="text-center mb-6">
+        <label for="language" class="text-violet-300 font-medium">Select Language:</label>
+        <select id="language" class="bg-violet-900 border border-violet-800 rounded-lg p-2">
+            <option value="en">English</option>
+            <option value="hi">Hindi</option>
+            <option value="ta">Tamil</option>
+            <option value="ko">Korean</option>
+            <option value="ja">Japanese</option>
+        </select>
+    </div>
+
+    <!-- Main Generator Section -->
+    <div class="glass-card rounded-2xl shadow-2xl p-6 mb-10 transition-all duration-300 hover:shadow-purple-900/30">
+        <div class="grid md:grid-cols-12 gap-6">
+            <!-- Left Panel - Inputs -->
+            <div class="md:col-span-5">
+                <h2 class="text-2xl font-bold mb-6 text-white flex items-center">
+                    <i class="fas fa-sliders mr-3 text-violet-400"></i>
+                    <span>Customize Your Excuse</span>
+                </h2>
+                
+                <!-- Scenario Selection -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-violet-300 mb-3">Select Scenario</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button class="scenario-btn active py-3 px-4 rounded-xl border border-violet-800 hover:bg-violet-900/30 transition flex flex-col items-center" data-scenario="work">
+                            <i class="fas fa-briefcase text-2xl mb-2 text-violet-400"></i>
+                            <span>Work</span>
+                        </button>
+                        <button class="scenario-btn py-3 px-4 rounded-xl border border-violet-800 hover:bg-violet-900/30 transition flex flex-col items-center" data-scenario="school">
+                            <i class="fas fa-graduation-cap text-2xl mb-2 text-violet-400"></i>
+                            <span>School</span>
+                        </button>
+                        <button class="scenario-btn py-3 px-4 rounded-xl border border-violet-800 hover:bg-violet-900/30 transition flex flex-col items-center" data-scenario="social">
+                            <i class="fas fa-users text-2xl mb-2 text-violet-400"></i>
+                            <span>Social</span>
+                        </button>
+                        <button class="scenario-btn py-3 px-4 rounded-xl border border-violet-800 hover:bg-violet-900/30 transition flex flex-col items-center" data-scenario="family">
+                            <i class="fas fa-home text-2xl mb-2 text-violet-400"></i>
+                            <span>Family</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Context Input -->
+                <div class="mb-6">
+                    <label for="context" class="block text-sm font-medium text-violet-300 mb-2">Describe Your Situation</label>
+                    <textarea id="context" rows="4" class="w-full px-4 py-3 bg-violet-900/30 border border-violet-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent text-white placeholder-violet-500" placeholder="e.g., I need to skip tomorrow's meeting because..."></textarea>
+                </div>
+                
+                <!-- Sliders for Customization -->
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <label for="urgency" class="block text-sm font-medium text-violet-300">Urgency Level</label>
+                        <span id="urgency-value" class="text-xs font-medium bg-violet-800 px-2 py-1 rounded-full">Medium</span>
+                    </div>
+                    <input type="range" id="urgency" min="1" max="10" value="5" class="w-full h-2 bg-violet-800 rounded-lg appearance-none cursor-pointer range-purple">
+                </div>
+                
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <label for="believability" class="block text-sm font-medium text-violet-300">Believability</label>
+                        <span id="believability-value" class="text-xs font-medium bg-violet-800 px-2 py-1 rounded-full">High</span>
+                    </div>
+                    <input type="range" id="believability" min="1" max="10" value="8" class="w-full h-2 bg-violet-800 rounded-lg appearance-none cursor-pointer range-purple">
+                </div>
+                
+                <!-- Tip Box -->
+                <div class="bg-violet-900/20 border border-violet-800 rounded-lg p-3 mb-6">
+                    <div class="flex items-start">
+                        <i class="fas fa-lightbulb text-yellow-400 mt-1 mr-2"></i>
+                        <span class="text-xs text-violet-200">Pro Tip: The more details you provide, the more customized and believable your excuse will be!</span>
+                    </div>
+                </div>
+                
+                <!-- Generate Button -->
+                <button id="generate-btn" class="btn-purple w-full text-white py-3 px-4 rounded-xl font-medium transition flex items-center justify-center glow-effect hover:glow-effect pulse-animation">
+                    <i class="fas fa-sparkles mr-2"></i> Generate Perfect Excuse
+                </button>
+            </div>
+            
+            <!-- Right Panel - Output -->
+            <div class="md:col-span-7">
+                <div class="glass-card rounded-xl p-6 h-full border border-violet-800/50">
+                    <!-- Excuse Display Header -->
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-white flex items-center">
+                            <i class="fas fa-scroll text-violet-400 mr-2"></i>
+                            <span>Your AI-Generated Excuse</span>
+                        </h2>
+                        <div class="flex space-x-3">
+                            <button id="copy-btn" class="text-violet-300 hover:text-violet-100 transition p-2 rounded-lg hover:bg-violet-900/30" title="Copy to clipboard">
+                                <i class="far fa-copy"></i>
+                            </button>
+                            <button id="save-btn" class="text-violet-300 hover:text-yellow-400 transition p-2 rounded-lg hover:bg-violet-900/30" title="Save to favorites">
+                                <i class="far fa-star"></i>
+                            </button>
+                            <button id="refresh-btn" class="text-violet-300 hover:text-violet-100 transition p-2 rounded-lg hover:bg-violet-900/30" title="Generate new version">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Excuse Display -->
+                    <div id="excuse-display" class="excuse-card bg-violet-900/30 p-6 rounded-lg border border-violet-800 min-h-[200px] max-h-64 overflow-y-auto scrollbar-custom mb-6 flex items-center justify-center">
+                        <div class="text-center">
+                            <i class="fas fa-wand-magic-sparkles text-3xl text-violet-500 mb-3"></i>
+                            <p class="text-violet-400">Fill in your details and hit "Generate" to create your perfect excuse!</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Additional Features Section -->
+                    <div class="space-y-6">
+                        <!-- Proof Section -->
+                        <div id="proof-section" class="hidden">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="font-semibold text-violet-300 flex items-center">
+                                    <i class="fas fa-file-alt mr-2"></i>
+                                    Supporting Documentation
+                                </h3>
+                                <button id="download-all-proof" class="text-xs bg-violet-800 hover:bg-violet-700 text-white px-3 py-1 rounded-full">
+                                    Download All
+                                </button>
+                            </div>
+                            
+                            <div class="grid grid-cols-3 gap-3">
+                                <div class="proof-card p-3 border border-violet-800 rounded-lg bg-violet-900/20 hover:bg-violet-900/40 transition cursor-pointer">
+                                    <div class="flex flex-col items-center">
+                                        <i class="fas fa-file-pdf text-3xl text-red-400 mb-2"></i>
+                                        <p class="text-xs text-center truncate w-full">Medical_Certificate.pdf</p>
+                                        <button class="text-xs text-violet-400 hover:text-white mt-2">
+                                            <i class="fas fa-download mr-1"></i> Download
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="proof-card p-3 border border-violet-800 rounded-lg bg-violet-900/20 hover:bg-violet-900/40 transition cursor-pointer">
+                                    <div class="flex flex-col items-center">
+                                        <i class="fas fa-image text-3xl text-blue-400 mb-2"></i>
+                                        <p class="text-xs text-center truncate w-full">Traffic_Proof.jpg</p>
+                                        <button class="text-xs text-violet-400 hover:text-white mt-2">
+                                            <i class="fas fa-download mr-1"></i> Download
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="proof-card p-3 border border-violet-800 rounded-lg bg-violet-900/20 hover:bg-violet-900/40 transition cursor-pointer">
+                                    <div class="flex flex-col items-center">
+                                        <i class="fas fa-map-marker-alt text-3xl text-green-400 mb-2"></i>
+                                        <p class="text-xs text-center truncate w-full">Location_Proof.txt</p>
+                                        <button class="text-xs text-violet-400 hover:text-white mt-2">
+                                            <i class="fas fa-download mr-1"></i> Download
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Emergency Call Section -->
+                        <div id="emergency-section" class="hidden">
+                            <h3 class="font-semibold text-violet-300 flex items-center mb-3">
+                                <i class="fas fa-phone-alt mr-2"></i>
+                                Simulate Emergency Contact
+                            </h3>
+                            
+                            <div class="bg-violet-900/20 border border-violet-800 rounded-lg p-4">
+                                <div class="flex items-center mb-3">
+                                    <div class="relative mr-3">
+                                        <div class="w-10 h-10 rounded-full bg-violet-900/50 border border-violet-700 flex items-center justify-center">
+                                            <i class="fas fa-user-md text-violet-400"></i>
+                                        </div>
+                                        <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-violet-900"></div>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-white">Dr. Gokul</p>
+                                        <p class="text-xs text-violet-400">Medical Professional</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button class="flex items-center justify-center py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white">
+                                        <i class="fas fa-phone mr-2"></i> Call Now
+                                    </button>
+                                    <button class="flex items-center justify-center py-2 bg-violet-800 hover:bg-violet-700 rounded-lg text-white">
+                                        <i class="fas fa-comment-alt mr-2"></i> Send SMS
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Apology Generator Section -->
+                        <div id="apology-section" class="hidden">
+                            <h3 class="font-semibold text-violet-300 flex items-center mb-3">
+                                <i class="fas fa-hands-helping mr-2"></i>
+                                AI-Generated Apology
+                            </h3>
+                            
+                            <div class="bg-violet-900/20 border border-violet-800 rounded-lg p-4">
+                                <div class="flex items-start mb-4">
+                                    <div class="mr-3">
+                                        <div class="w-10 h-10 rounded-full bg-violet-900/50 border border-violet-700 flex items-center justify-center">
+                                            <i class="fas fa-robot text-violet-400"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-violet-100 flex-1" id="apology-text">
+                                        Select a tone style below to generate an accompanying apology...
+                                    </p>
+                                </div>
+                                
+                                <div class="grid grid-cols-4 gap-2">
+                                    <label class="block">
+                                        <input type="radio" name="tone" value="professional" class="hidden" checked>
+                                        <div class="radio-tile bg-violet-900/20 border border-violet-800 rounded-lg p-2 text-center cursor-pointer">
+                                            <i class="fas fa-suitcase block text-xl mb-1 text-violet-400"></i>
+                                            <span class="text-xs text-violet-300">Professional</span>
+                                        </div>
+                                    </label>
+                                    <label class="block">
+                                        <input type="radio" name="tone" value="emotional" class="hidden">
+                                        <div class="radio-tile bg-violet-900/20 border border-violet-800 rounded-lg p-2 text-center cursor-pointer">
+                                            <i class="fas fa-heart block text-xl mb-1 text-violet-400"></i>
+                                            <span class="text-xs text-violet-300">Emotional</span>
+                                        </div>
+                                    </label>
+                                    <label class="block">
+                                        <input type="radio" name="tone" value="casual" class="hidden">
+                                        <div class="radio-tile bg-violet-900/20 border border-violet-800 rounded-lg p-2 text-center cursor-pointer">
+                                            <i class="fas fa-smile beam block text-xl mb-1 text-violet-400"></i>
+                                            <span class="text-xs text-violet-300">Casual</span>
+                                        </div>
+                                    </label>
+                                    <label class="block">
+                                        <input type="radio" name="tone" value="formal" class="hidden">
+                                        <div class="radio-tile bg-violet-900/20 border border-violet-800 rounded-lg p-2 text-center cursor-pointer">
+                                            <i class="fas fa-gavel block text-xl mb-1 text-violet-400"></i>
+                                            <span class="text-xs text-violet-300">Formal</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Additional Features Toggle -->
+                        <div class="mt-4 flex justify-center">
+                            <div class="inline-flex rounded-lg p-1 bg-violet-900/30 border border-violet-800">
+                                <button class="feature-toggle-btn px-3 py-1 text-sm rounded-md bg-violet-800 text-white" data-feature="proof">
+                                    <i class="fas fa-file-alt mr-1"></i> Proof
+                                </button>
+                                <button class="feature-toggle-btn px-3 py-1 text-sm rounded-md text-violet-400 hover:text-white" data-feature="emergency">
+                                    <i class="fas fa-phone-alt mr-1"></i> Emergency
+                                </button>
+                                <button class="feature-toggle-btn px-3 py-1 text-sm rounded-md text-violet-400 hover:text-white" data-feature="apology">
+                                    <i class="fas fa-hands-helping mr-1"></i> Apology
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Excuse Library Section -->
+    <div class="glass-card rounded-2xl shadow-2xl p-6 mb-10">
+        <h2 class="text-2xl font-bold mb-6 text-white flex items-center">
+            <i class="fas fa-book-open mr-3 text-violet-400"></i>
+            <span>Your Excuse Library</span>
+        </h2>
+        
+        <!-- Excuse Categories -->
+        <div class="flex space-x-2 mb-6 overflow-x-auto pb-2 scrollbar-custom">
+            <button class="excuse-category-btn px-4 py-2 rounded-full bg-violet-800 text-white whitespace-nowrap active" data-category="history">
+                <i class="fas fa-history mr-2"></i> Recent History
+            </button>
+            <button class="excuse-category-btn px-4 py-2 rounded-full bg-violet-900/30 text-violet-300 hover:text-white whitespace-nowrap" data-category="favorites">
+                <i class="fas fa-star mr-2"></i> Favorites
+            </button>
+            <button class="excuse-category-btn px-4 py-2 rounded-full bg-violet-900/30 text-violet-300 hover:text-white whitespace-nowrap" data-category="work">
+                <i class="fas fa-briefcase mr-2"></i> Work
+            </button>
+            <button class="excuse-category-btn px-4 py-2 rounded-full bg-violet-900/30 text-violet-300 hover:text-white whitespace-nowrap" data-category="school">
+                <i class="fas fa-graduation-cap mr-2"></i> School
+            </button>
+            <button class="excuse-category-btn px-4 py-2 rounded-full bg-violet-900/30 text-violet-300 hover:text-white whitespace-nowrap" data-category="social">
+                <i class="fas fa-users mr-2"></i> Social
+            </button>
+            <button class="excuse-category-btn px-4 py-2 rounded-full bg-violet-900/30 text-violet-300 hover:text-white whitespace-nowrap" data-category="family">
+                <i class="fas fa-home mr-2"></i> Family
+            </button>
+        </div>
+        
+        <!-- Excuse Items -->
+        <div class="grid md:grid-cols-2 gap-4 ">
+            <div class="excuse-item bg-violet-900/20 border border-violet-800 rounded-xl p-4 hover:bg-violet-900/30 transition cursor-pointer">
+                <div class="flex justify-between items-start mb-2">
+                    <p class="text-violet-100 font-medium">I've come down with a sudden fever and need to rest today.</p>
+                    <button class="star-btn text-violet-400 hover:text-yellow-400 ml-3 active">
+                        <i class="fas fa-star"></i>
+                    </button>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-xs bg-violet-800 text-white px-2 py-1 rounded-full">Work</span>
+                    <span class="text-xs text-violet-400">2 days ago</span>
+                </div>
+            </div>
+            <div class="excuse-item bg-violet-900/20 border border-violet-800 rounded-xl p-4 hover:bg-violet-900/30 transition cursor-pointer">
+                <div class="flex justify-between items-start mb-2">
+                    <p class="text-violet-100 font-medium">My car won't start this morning and I'm waiting for roadside assistance.</p>
+                    <button class="star-btn text-violet-400 hover:text-yellow-400 ml-3">
+                        <i class="far fa-star"></i>
+                    </button>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-xs bg-violet-800 text-white px-2 py-1 rounded-full">Family</span>
+                    <span class="text-xs text-violet-400">1 week ago</span>
+                </div>
+            </div>
+            <div class="excuse-item bg-violet-900/20 border border-violet-800 rounded-xl p-4 hover:bg-violet-900/30 transition cursor-pointer">
+                <div class="flex justify-between items-start mb-2">
+                    <p class="text-violet-100 font-medium">There's been a family emergency that requires my immediate attention.</p>
+                    <button class="star-btn text-violet-400 hover:text-yellow-400 ml-3">
+                        <i class="far fa-star"></i>
+                    </button>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-xs bg-violet-800 text-white px-2 py-1 rounded-full">Work</span>
+                    <span class="text-xs text-violet-400">3 days ago</span>
+                </div>
+            </div>
+            <div class="excuse-item bg-violet-900/20 border border-violet-800 rounded-xl p-4 hover:bg-violet-900/30 transition cursor-pointer">
+                <div class="flex justify-between items-start mb-2">
+                    <p class="text-violet-100 font-medium">I need to take my younger sibling to a doctor's appointment this morning.</p>
+                    <button class="star-btn text-violet-400 hover:text-yellow-400 ml-3">
+                        <i class="far fa-star"></i>
+                    </button>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-xs bg-violet-800 text-white px-2 py-1 rounded-full">School</span>
+                    <span class="text-xs text-violet-400">Today</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-8">
+            <canvas id="excuseChart" class="w-full h-64"></canvas>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="text-center mt-12 text-violet-400 text-sm">
+        <div class="mb-4 space-x-4">
+            <a href="#" class="hover:text-white transition">About</a>
+            <a href="#" class="hover:text-white transition">Privacy</a>
+            <a href="#" class="hover:text-white transition">Terms</a>
+            <a href="#" class="hover:text-white transition">Contact</a>
+        </div>
+        <p>© 2025 Intelligent Excuse Generator. All rights reserved.</p>
+    </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // DOM Elements
+    const generateBtn = document.getElementById('generate-btn');
+    const contextInput = document.getElementById('context');
+    const excuseDisplay = document.getElementById('excuse-display');
+    const urgencySlider = document.getElementById('urgency');
+    const believabilitySlider = document.getElementById('believability');
+    const urgencyValue = document.getElementById('urgency-value');
+    const believabilityValue = document.getElementById('believability-value');
+    const copyBtn = document.getElementById('copy-btn');
+    const saveBtn = document.getElementById('save-btn');
+    const refreshBtn = document.getElementById('refresh-btn');
+    const proofSection = document.getElementById('proof-section');
+    const emergencySection = document.getElementById('emergency-section');
+    const apologySection = document.getElementById('apology-section');
+    const featureToggleBtns = document.querySelectorAll('.feature-toggle-btn');
+    const scenarioBtns = document.querySelectorAll('.scenario-btn');
+    const excuseCategoryBtns = document.querySelectorAll('.excuse-category-btn');
+    const excuseItems = document.querySelectorAll('.excuse-item');
+    const starBtns = document.querySelectorAll('.star-btn');
+    const radioTiles = document.querySelectorAll('.radio-tile input');
+    
+    // Sample excuses data
+    const excuseTemplates = {
+        work: [
+            "I'm unfortunately feeling under the weather today and need to take a sick day to recover properly.",
+            "There's been a family emergency that requires my immediate attention today.",
+            "My car won't start this morning and I'm waiting for roadside assistance to arrive.",
+            "I've been exposed to COVID and need to isolate while waiting for test results."
+        ],
+        school: [
+            "I won't be able to attend class today due to a severe migraine that's making it difficult to focus.",
+            "I need to take my younger sibling to an unexpected doctor's appointment this morning.",
+            "Our internet service is down in the entire neighborhood and I can't access the online materials.",
+            "I have a family obligation that conflicts with today's class schedule."
+        ],
+        social: [
+            "I'm really sorry but something urgent has come up that I can't ignore and I'll have to cancel our plans.",
+            "I'm not feeling well today and think it's best if I stay home to rest and recover.",
+            "My ride bailed last minute and I don't have another way to get to the event tonight.",
+            "I have an unexpected work deadline that I need to focus on completing tonight."
+        ],
+        family: [
+            "I've got an important work project that needs my full attention throughout the weekend.",
+            "My best friend is going through a tough time and asked me to stay with them this evening.",
+            "I committed to helping with a community service event that I completely forgot about when we made plans.",
+            "My doctor suggested I take it easy this week due to high stress levels affecting my health."
+        ]
+    };
+    
+    const apologies = {
+        professional: "Please accept my sincere apologies for any inconvenience this may have caused. I truly value our working relationship and will make every effort to ensure this doesn't happen again. Please let me know how I can make this right.",
+        emotional: "I'm so incredibly sorry about this situation. I know how disappointing this must be and I feel terrible about letting you down. Please know I would be there if I possibly could - this was absolutely not my intention.",
+        casual: "Hey, I'm really sorry about this! I feel awful canceling last minute. You know I wouldn't do this unless it was really necessary. Let's definitely reschedule soon - I promise to make it up to you!",
+        formal: "I extend my most heartfelt apologies for this unavoidable circumstance. Please rest assured that I take this matter very seriously and will take appropriate measures to prevent recurrence. I appreciate your understanding during this challenging time."
+    };
+
+    // Current state
+    let currentScenario = 'work';
+    let currentTone = 'professional';
+    let lastGeneratedExcuse = '';
+    
+    // Initialize Chart.js
+    const ctx = document.getElementById('excuseChart').getContext('2d');
+    const excuseChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+            datasets: [{
+                label: 'Excuses Used',
+                data: [12, 19, 15, 20, 18, 27, 23],
+                borderColor: '#a78bfa',
+                backgroundColor: 'rgba(167, 139, 250, 0.1)',
+                borderWidth: 2,
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(178, 142, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: '#c4b5fd'
+                    }
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(178, 142, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: '#c4b5fd'
+                    }
+                }
+            }
+        }
+    });
+
+    // Event Listeners
+    generateBtn.addEventListener('click', generateExcuse);
+    urgencySlider.addEventListener('input', updateSliderValues);
+    believabilitySlider.addEventListener('input', updateSliderValues);
+    copyBtn.addEventListener('click', copyToClipboard);
+    saveBtn.addEventListener('click', saveToFavorites);
+    refreshBtn.addEventListener('click', generateExcuse);
+    featureToggleBtns.forEach(btn => btn.addEventListener('click', toggleFeatureSection));
+    scenarioBtns.forEach(btn => btn.addEventListener('click', selectScenario));
+    excuseCategoryBtns.forEach(btn => btn.addEventListener('click', selectExcuseCategory));
+    starBtns.forEach(btn => btn.addEventListener('click', toggleStar));
+    document.querySelectorAll('input[name="tone"]').forEach(radio => {
+        radio.addEventListener('change', updateApologyTone);
+    });
+
+    // Functions
+    function generateExcuse() {
+        // Show loading state
+        generateBtn.disabled = true;
+        generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Generating...';
+        
+        // Remove pulse animation during generation
+        generateBtn.classList.remove('pulse-animation');
+        
+        // Simulate API call with timeout
+        setTimeout(() => {
+            const context = contextInput.value.trim();
+            const urgency = urgencySlider.value;
+            const believability = believabilitySlider.value;
+            
+            // Generate excuse based on scenario
+            const scenarioExcuses = excuseTemplates[currentScenario];
+            const randomExcuse = scenarioExcuses[Math.floor(Math.random() * scenarioExcuses.length)];
+            
+            // Add contextual details if provided
+            let finalExcuse = randomExcuse;
+            if (context) {
+                finalExcuse = `${context} ${randomExcuse}`;
+            }
+            
+            // Adjust based on urgency and believability
+            if (urgency > 7) {
+                finalExcuse = finalExcuse.replace('today', 'immediately');
+                finalExcuse = finalExcuse.replace("won't be able to", "can't possibly");
+                finalExcuse = finalExcuse.replace("need to", "absolutely must");
+            }
+            
+            if (urgency > 5 && urgency <= 7) {
+                finalExcuse = finalExcuse.replace(/\.$/, " - I hope you understand.");
+            } else if (urgency <= 5) {
+                finalExcuse = finalExcuse.replace(/\.$/, " - sorry for the late notice!");
+            }
+            
+            if (believability > 7) {
+                finalExcuse += " I can provide documentation if needed.";
+            }
+            
+            if (believability <= 5) {
+                finalExcuse = finalExcuse.replace(/\.$/, " Hope this isn't too much of an inconvenience.");
+            }
+            
+            // Save the last generated excuse
+            lastGeneratedExcuse = finalExcuse;
+            
+            // Display the excuse with typing animation
+            typeWriterEffect(excuseDisplay, finalExcuse);
+            
+            // Show additional sections
+            proofSection.classList.remove('hidden');
+            emergencySection.classList.remove('hidden');
+            apologySection.classList.remove('hidden');
+            
+            // Restore pulse animation
+            generateBtn.classList.add('pulse-animation');
+        }, 1000); // Simulate API delay
+    }
+    
+    function typeWriterEffect(element, text) {
+        element.innerHTML = ''; // Clear previous content
+        let i = 0;
+        element.classList.add('cursor-animation');
+        
+        function typing() {
+            if (i < text.length) {
+                element.innerHTML += text.charAt(i);
+                i++;
+                setTimeout(typing, 20); // Adjust typing speed here
+            } else {
+                element.classList.remove('cursor-animation');
+                // Reset generate button after typing finishes
+                setTimeout(() => {
+                    generateBtn.disabled = false;
+                    generateBtn.innerHTML = '<i class="fas fa-sparkles mr-2"></i> Generate Perfect Excuse';
+                }, 200);
+            }
+        }
+        
+        typing();
+    }
+    
+    function updateSliderValues() {
+        // Update urgency display value
+        const urgency = urgencySlider.value;
+        if (urgency <= 3) {
+            urgencyValue.textContent = 'Low';
+        } else if (urgency <= 7) {
+            urgencyValue.textContent = 'Medium';
+        } else {
+            urgencyValue.textContent = 'High';
+        }
+        
+        // Update believability display value
+        const believability = believabilitySlider.value;
+        if (believability <= 4) {
+            believabilityValue.textContent = 'Basic';
+        } else if (believability <= 7) {
+            believabilityValue.textContent = 'Credible';
+        } else {
+            believabilityValue.textContent = 'Solid';
+        }
+    }
+    
+    function copyToClipboard() {
+        if (!lastGeneratedExcuse) {
+            // Create notification bubble
+            const notification = document.createElement('div');
+            notification.className = 'fixed bottom-4 right-4 bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg animate-bounce';
+            notification.innerHTML = '<i class="fas fa-exclamation-circle mr-2"></i> Generate an excuse first!';
+            document.body.appendChild(notification);
+            
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                notification.style.transition = 'opacity 0.5s';
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 500);
+            }, 3000);
+            return;
+        }
+        
+        navigator.clipboard.writeText(lastGeneratedExcuse)
+            .then(() => {
+                // Change icon to checkmark temporarily
+                const originalIcon = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+                
+                // Create notification bubble
+                const notification = document.createElement('div');
+                notification.className = 'fixed bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg animate-bounce';
+                notification.textContent = 'Copied to clipboard!';
+                document.body.appendChild(notification);
+                
+                // Remove notification after 3 seconds
+                setTimeout(() => {
+                    notification.style.transition = 'opacity 0.5s';
+                    notification.style.opacity = '0';
+                    setTimeout(() => notification.remove(), 500);
+                }, 3000);
+                
+                // Revert icon after 2 seconds
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalIcon;
+                }, 2000);
+            })
+            .catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+    }
+    
+    function saveToFavorites() {
+        if (!lastGeneratedExcuse) {
+            // Create notification bubble
+            const notification = document.createElement('div');
+            notification.className = 'fixed bottom-4 right-4 bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg animate-bounce';
+            notification.innerHTML = '<i class="fas fa-exclamation-circle mr-2"></i> Generate an excuse first!';
+            document.body.appendChild(notification);
+            
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                notification.style.transition = 'opacity 0.5s';
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 500);
+            }, 3000);
+            return;
+        }
+        
+        // Toggle star icon state
+        saveBtn.classList.toggle('text-yellow-400');
+        saveBtn.classList.toggle('text-violet-300');
+        
+        const isSaved = saveBtn.classList.contains('text-yellow-400');
+        
+        // Change icon
+        saveBtn.innerHTML = isSaved ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
+        
+        // Create notification bubble
+        const notification = document.createElement('div');
+        notification.className = `fixed bottom-4 right-4 ${isSaved ? 'bg-yellow-600' : 'bg-violet-600'} text-white px-4 py-2 rounded-lg shadow-lg animate-bounce`;
+        notification.innerHTML = `<i class="fas fa-${isSaved ? 'star' : 'times'} mr-2"></i> ${isSaved ? 'Added to favorites!' : 'Removed from favorites'}`;
+        document.body.appendChild(notification);
+        
+        // Remove notification after 3 seconds
+        setTimeout(() => {
+            notification.style.transition = 'opacity 0.5s';
+            notification.style.opacity = '0';
+            setTimeout(() => notification.remove(), 500);
+        }, 3000);
+        
+        // In a real app, here you would save to database
+    }
+    
+    function toggleFeatureSection(e) {
+        const feature = e.target.dataset.feature;
+        
+        // Reset all buttons
+        featureToggleBtns.forEach(btn => {
+            btn.classList.remove('bg-violet-800', 'text-white');
+            btn.classList.add('text-violet-400', 'hover:text-white');
+        });
+        
+        // Activate clicked button
+        e.target.classList.add('bg-violet-800', 'text-white');
+        e.target.classList.remove('text-violet-400', 'hover:text-white');
+        
+        // Hide all sections first
+        proofSection.classList.add('hidden');
+        emergencySection.classList.add('hidden');
+        apologySection.classList.add('hidden');
+        
+        // Show selected section
+        switch(feature) {
+            case 'proof':
+                proofSection.classList.remove('hidden');
+                break;
+            case 'emergency':
+                emergencySection.classList.remove('hidden');
+                break;
+            case 'apology':
+                apologySection.classList.remove('hidden');
+                break;
+        }
+    }
+    
+    function selectScenario(e) {
+        scenarioBtns.forEach(btn => {
+            btn.classList.remove('active');
+            btn.classList.remove('bg-violet-900/40', 'border-violet-600');
+        });
+        
+        e.target.classList.add('active');
+        e.target.classList.add('bg-violet-900/40', 'border-violet-600');
+        
+        currentScenario = e.target.dataset.scenario;
+    }
+    
+    function selectExcuseCategory(e) {
+        excuseCategoryBtns.forEach(btn => {
+            btn.classList.remove('active');
+            btn.classList.remove('bg-violet-800', 'text-white');
+            btn.classList.add('bg-violet-900/30', 'text-violet-300');
+        });
+        
+        e.target.classList.add('active');
+        e.target.classList.add('bg-violet-800', 'text-white');
+        e.target.classList.remove('bg-violet-900/30', 'text-violet-300');
+        
+        // In a real app, here you would filter excuses by category
+    }
+    
+    function toggleStar(e) {
+        e.stopPropagation(); // Prevent triggering parent item click
+        e.target.classList.toggle('far');
+        e.target.classList.toggle('fas');
+        e.target.classList.toggle('text-yellow-400');
+        e.target.classList.toggle('active');
+    }
+    
+    function updateApologyTone(e) {
+        currentTone = e.target.value;
+        document.getElementById('apology-text').textContent = apologies[currentTone];
+    }
+    
+    // Initialize
+    updateSliderValues();
+    
+    // Make excuse items clickable to copy
+    excuseItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const excuseText = this.querySelector('p').textContent;
+            
+            // Create notification bubble
+            const notification = document.createElement('div');
+            notification.className = 'fixed bottom-4 right-4 bg-violet-600 text-white px-4 py-2 rounded-lg shadow-lg animate-bounce';
+            notification.textContent = 'Copied to input box!';
+            document.body.appendChild(notification);
+            
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                notification.style.transition = 'opacity 0.5s';
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 500);
+            }, 3000);
+            
+            // Set input text
+            contextInput.value = excuseText;
+            contextInput.focus();
+            
+            // Animate the item
+            this.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 200);
+        });
+    });
+</script>
+</body> </html>
