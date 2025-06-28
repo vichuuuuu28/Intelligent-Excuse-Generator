@@ -32,7 +32,7 @@ openai
 transformers
 torch
 gtts
-googletrans==4.0.0-rc1
+googletrans
 python-dotenv
 reportlab
 Pillow
